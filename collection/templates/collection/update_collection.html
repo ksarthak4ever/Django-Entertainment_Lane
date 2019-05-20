@@ -1,0 +1,17 @@
+{% extends 'collection/base.html' %}
+
+{% block content %}
+
+<div class="container">
+<h2>Edit your Collection</h2>
+	<form method="post">
+		{% csrf_token %}
+		{{ form.as_p }}
+		<button type="submit" class="btn btn-primary" >Save</button>
+	</form>
+
+	<a href="{% url 'delete_collection' collection.id %}" class="btn btn-danger"> Delete this Collection</a>
+
+</div>
+
+{% endblock %}

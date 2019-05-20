@@ -1,0 +1,14 @@
+{% extends 'collection/base.html' %}
+
+{% block content %}
+
+<div class="container">
+<h2>Create your Collection</h2>
+	<form method="post">
+		{% csrf_token %}
+		{{ form.as_p }}
+		<button type="submit" class="btn btn-primary" >Create Collection</button>
+	</form>
+</div>
+
+{% endblock %}
