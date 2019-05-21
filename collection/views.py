@@ -3,7 +3,8 @@ from django.urls import reverse_lazy #used to redirect to homepage when someone 
 from django.views import generic
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import authenticate, login 
-from .models import Collection
+from .models import Collection,Video
+from .forms import VideoForm, SearchForm
 
 
 def home(request):
@@ -11,6 +12,22 @@ def home(request):
 
 def dashboard(request):
 	return render(request, 'collection/dashboard.html')
+
+def add_video(request, pk):
+	form = VideoForm()
+	search_form = SearchForm()
+
+	if request.method == 'POST':
+		filled_form = VideoForm(request.POST)
+		if filled_form.is_valid():
+			video = Video()
+			video.url = filled_form.cleaned_data['url']
+			video.title = filled_form.cleaned_data['title']
+			video.youtube_id = filled_form.cleaned_data['youtube_id']
+			video.collection = Collection.objects.get(pk=pk)
+			video.save()
+
+	return render(request, 'collection/add_video.html', {'form':form, 'search_form':search_form})
 
 
 class SignUp(generic.CreateView):
