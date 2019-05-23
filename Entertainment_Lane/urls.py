@@ -32,6 +32,8 @@ urlpatterns = [
     path('my_collection/<int:pk>/update', views.update_collection.as_view(), name='update_collection'),
     path('my_collection/<int:pk>/delete', views.delete_collection.as_view(), name='delete_collection'),
     path('my_collection/<int:pk>/addvideo', views.add_video, name='add_video'),
+    path('video/search', views.video_search, name='video_search'),
+
 ]
 
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
