@@ -3,7 +3,29 @@
 {% block content %}
 
 <div class="container">
-Dashboard
+	<div class="text-center">
+		<h1> {{ user.username }}'s Collection </h1>
+		<a href="{% url 'create_collection' %}" class="btn btn-primary"> Create New Collection </a>
+	</div>
+	{% for collection in collections %}
+
+	<h2><a href="{% url 'detail_collection' collection.id %}">{{ collection.title }}</a></h2>
+	<a href="{% url 'delete_collection' collection.id %}" class="btn btn-danger"> Delete </a>
+	<a href="{% url 'update_collection' collection.id %}" class="btn btn-primary"> Edit </a>
+	<a href="{% url 'add_video' collection.id %}" class="btn btn-primary"> Add Video </a>
+
+		<div class="row">
+			{% for video in collection.video_set.all %}
+			<div class="col-md-4 mt-3">
+				<div class="card mb-4 shadow-sm">
+					<iframe width="100%" height="225" src="https://www.youtube.com/embed/{{ video.youtube_id }}" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe> 
+					<div class="card-body"><p class="card-text"> {{ video.title }} </p>
+					</div>
+				</div>
+			</div>
+			{% endfor %}
+		</div>
+	{% endfor %}
 </div>
 
 {% endblock %}

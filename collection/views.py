@@ -19,7 +19,8 @@ def home(request):
 	return render(request, 'collection/home.html')
 
 def dashboard(request):
-	return render(request, 'collection/dashboard.html')
+	collections = Collection.objects.filter(user=request.user)
+	return render(request, 'collection/dashboard.html', {'collections':collections})
 
 def add_video(request, pk):
 	form = VideoForm()
