@@ -86,12 +86,12 @@ class create_collection(generic.CreateView):
 	model = Collection
 	fields = ['title']
 	template_name = 'collection/create_collection.html'
-	success_url = reverse_lazy('home')
+	success_url = reverse_lazy('dashboard')
 
 	def form_valid(self, form):
 		form.instance.user = self.request.user
 		super(create_collection, self).form_valid(form)
-		return redirect('home')
+		return redirect('dashboard')
 
 
 class detail_collection(generic.DetailView):
