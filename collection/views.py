@@ -16,7 +16,9 @@ YOUTUBE_API_KEY = 'AIzaSyAE79s9L9lU-OKs8fqa8R7HS-a0NDr2UPo' #put it in environme
 
 
 def home(request):
-	return render(request, 'collection/home.html')
+	recent_collections = Collection.objects.all().order_by('-id')[:3]
+	popular_collections = [Collection.objects.get(pk=2)]
+	return render(request, 'collection/home.html', {'recent_collections':recent_collections, 'popular_collections':popular_collections})
 
 def dashboard(request):
 	collections = Collection.objects.filter(user=request.user)

@@ -1,6 +1,50 @@
 {% extends 'collection/base.html' %}
 {% block content %}
+<section class="jumbotron text-center">
+	<div class="container">
+		<h1 class="jumbotron-heading">What's your perfect idea of Entertainment Lane?</h1>
+		<p class="lead text-muted"> They are your goto videos. You have a top 10 list and it's time to share them with the world. Click the button below to get started </p>
+		<p><a href="{% url 'create_collection' %}" class="btn btn-primary"> Create your own Collection  </a></p>
+	</div>
+</section>
+<div>
 
-Welcome to the Homepage!
+	<h1 class="text-center"> Popular Collections </h1>
+	{% for collection in popular_collections %}
+
+	<h2><a href="{% url 'detail_collection' collection.id %}">{{ collection.title }}</a></h2>
+
+		<div class="row">
+			{% for video in collection.video_set.all %}
+			<div class="col-md-4 mt-3">
+				<div class="card mb-4 shadow-sm">
+					<iframe width="100%" height="225" src="https://www.youtube.com/embed/{{ video.youtube_id }}" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe> 
+					<div class="card-body"><p class="card-text"> {{ video.title }} </p>
+					</div>
+				</div>
+			</div>
+			{% endfor %}
+		</div>
+	{% endfor %}
+
+	<h1 class="text-center"> Recent Collections </h1>
+	{% for collection in recent_collections %}
+
+	<h2><a href="{% url 'detail_collection' collection.id %}">{{ collection.title }}</a></h2>
+
+		<div class="row">
+			{% for video in collection.video_set.all %}
+			<div class="col-md-4 mt-3">
+				<div class="card mb-4 shadow-sm">
+					<iframe width="100%" height="225" src="https://www.youtube.com/embed/{{ video.youtube_id }}" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe> 
+					<div class="card-body"><p class="card-text"> {{ video.title }} </p>
+					</div>
+				</div>
+			</div>
+			{% endfor %}
+		</div>
+	{% endfor %}
+
+</div>
 
 {% endblock %}
