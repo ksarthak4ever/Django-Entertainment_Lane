@@ -7,6 +7,8 @@ from .models import Collection,Video
 from .forms import VideoForm, SearchForm
 from django.http import Http404, JsonResponse
 from django.forms.utils import ErrorList 
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 
 import urllib #importing this library to parse the youtube video url and get it's id
@@ -20,10 +22,14 @@ def home(request):
 	popular_collections = [Collection.objects.get(pk=2)]
 	return render(request, 'collection/home.html', {'recent_collections':recent_collections, 'popular_collections':popular_collections})
 
+
+@login_required
 def dashboard(request):
 	collections = Collection.objects.filter(user=request.user)
 	return render(request, 'collection/dashboard.html', {'collections':collections})
 
+
+@login_required
 def add_video(request, pk):
 	form = VideoForm()
 	search_form = SearchForm()
@@ -56,6 +62,7 @@ def add_video(request, pk):
 	return render(request, 'collection/add_video.html', {'form':form, 'search_form':search_form, 'collection':collection})
 
 
+@login_required
 def video_search(request): #Return json response of the ajax request
 	search_form = SearchForm(request.GET)
 	if search_form.is_valid():
@@ -65,15 +72,21 @@ def video_search(request): #Return json response of the ajax request
 	return JsonResponse({'error':'Not able to validate form'})
 
 
-class DeleteVideo(generic.DeleteView):
+class DeleteVideo(LoginRequiredMixin, generic.DeleteView):
 	model = Video
 	template_name = 'collection/delete_video.html'
 	success_url = reverse_lazy('dashboard')
 
+	def get_object(self):
+		video = super(DeleteVideo, self).get_object()
+		if not video.collection.user == self.request.user:
+			raise Http404
+		return video 
+
 
 class SignUp(generic.CreateView):
 	form_class = UserCreationForm
-	success_url = reverse_lazy('home')
+	success_url = reverse_lazy('dashboard')
 	template_name = 'registration/signup.html'
 
 	def form_valid(self, form): #to login user as soon as he signsup
@@ -84,7 +97,7 @@ class SignUp(generic.CreateView):
 		return view
 	
 
-class create_collection(generic.CreateView):
+class create_collection(LoginRequiredMixin, generic.CreateView):
 	model = Collection
 	fields = ['title']
 	template_name = 'collection/create_collection.html'
@@ -101,16 +114,28 @@ class detail_collection(generic.DetailView):
 	template_name = 'collection/detail_collection.html'
 
 
-class update_collection(generic.UpdateView):
+class update_collection(LoginRequiredMixin, generic.UpdateView):
 	model = Collection
 	template_name = 'collection/update_collection.html'
 	fields = ['title']
 	success_url = reverse_lazy('dashboard')
 
+	def get_object(self):
+		collection = super(update_collection, self).get_object()
+		if not collection.user == self.request.user:
+			raise Http404
+		return collection 
 
-class delete_collection(generic.DeleteView):
+
+class delete_collection(LoginRequiredMixin, generic.DeleteView):
 	model = Collection
 	template_name = 'collection/delete_collection.html'
 	success_url = reverse_lazy('dashboard')
+
+	def get_object(self):
+		collection = super(delete_collection, self).get_object()
+		if not collection.user == self.request.user:
+			raise Http404
+		return collection 
 
 
